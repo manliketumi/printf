@@ -1,69 +1,56 @@
 #include "main.h"
-#include <stdio.h>
-#include <stdarg.h>
-
-void print_buffer(char buffer[], int *buff_ind);
-
 /**
  * _printf - Implement the basic conversion specifiers
  * @format: formated output
- *
  * Return: printed characters
  */
 int _printf(const char *format, ...)
 {
-	int i, printed = 0, printed_chars = 0;
-	int flags, width, precision, size, buff_ind = 0;
-	va_list list;
-	char buffer[BUFF_SIZE];
+	int count 0;
 
-	if (format == NULL)
-		return (-1);
+	va_list args;
 
-	va_start(list, format);
+	va_start(args, format);
+	const char *ch;
 
-	for (i = 0; format && format[i] != '\0'; i++)
+	for (ch = format; *ch != '\0'; ch++)
 	{
-		if (format[i] != '%')
+		if (*ch == '%')
 		{
-			buffer[buff_ind++] = format[i];
-			if (buff_ind == BUFF_SIZE)
-				print_buffer(buffer, &buff_ind);
-			/* write(1, &format[i], 1);*/
-			printed_chars++;
+			ch++;
+			switch (*ch)
+			{
+			case 'c':
+			{
+				int c = va_arg(args, int);
+
+				putchar(c);
+				count++;
+				break;
+			}
+			case 's':
+			{
+				const char *str = va_arg(args, const char *);
+
+				while (*str != '\0')
+				{
+					putchar(*str);
+					str++;
+					count++;
+				}
+				break;
+			}
+			case '%':
+				putchar('%');
+				count++;
+				break;
 		}
 		else
 		{
-			print_buffer(buffer, &buff_ind);
-			flags = get_flags(format, &i);
-			width = get_width(format, &i, list);
-			precision = get_precision(format, &i, list);
-			size = get_size(format, &i);
-			++i;
-			printed = handle_print(format, &i, list, buffer,
-				flags, width, precision, size);
-			if (printed == -1)
-				return (-1);
-			printed_chars += printed;
+			putchar(*ch);
+			count++;
 		}
 	}
-	print_buffer(buffer, &buff_ind);
-
-	va_end(list);
-
-	return (printed_chars);
-}
-
-/**
- * print_buffer -  implementation by using a local buffer
- * to minimize the number of write calls
- * @buffer: array
- * @buff_ind: showing the length
- */
-void print_buffer(char buffer[], int *buff_ind)
-{
-	if (*buff_ind > 0)
-		write(1, &buffer[0], *buff_ind);
-
-	*buff_ind = 0;
+	va_end(args);
+	return (count);
 }
