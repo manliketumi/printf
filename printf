@@ -7,5 +7,6 @@
 int main(void)
 {
 	_printf("Let's try to printf a simple sentence.\n");
+	_printf("This is the second string to be printed.\n");
 	return (0);
 }
