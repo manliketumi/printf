@@ -1,4 +1,7 @@
 #include "main.h"
+
+void print_buffer(char buffer[], int *buff_ind);
+
 /**
  * _printf - Implement the basic conversion specifiers
  * @format: formated output
@@ -6,12 +9,11 @@
  */
 int _printf(const char *format, ...)
 {
-int count = 0;
-
+ int count = 0;
+ 
 va_list args;
-
 va_start(args, format);
-
+ 
 while (*format != '\0')
 {
 if (*format == '%')
@@ -43,4 +45,18 @@ format++;
 }
 va_end(args);
 return (count);
+}                         
+
+/**
+ * printf_buffer - Print the contents of the buffer
+ * @buffer: Array
+ * @buff_ind: Index that represents the length
+ */
+void printf_buffer(char buffer[], int *buff_ind)
+{
+if (*buff_ind > 0)
+write(1, &buffer[0], *buff_ind);
+
+*buff_ind = 0;
+
 }
